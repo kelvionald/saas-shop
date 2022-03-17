@@ -1,0 +1,30 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+AddElementTag("fallback", $bgColor="#444444")
+
+
+Person(user_customer, "Покупатель")
+Person(user_accountant, "Бухгалтер")
+Person(user_programmer, "Программист")
+
+System(system_shop, "SaaS магазин", "Позволяет покупателю покупать товары и изменять тарифы")
+
+System_Ext(system_email, "Почтовый сервис", "n8n - отправка сообщений клиенту через n8n на электронную почту")
+System_Ext(system_bank, "Платежный шлюз", "Sber - страница оплаты продукта")
+System_Ext(system_docs, "Сервис ЭДО", "Диадок - сервис подписания электронных документов")
+SystemQueue(system_queue, "Брокер сообщений", "RabbitMQ - брокер сообщений")
+SystemDb(system_db, "База данных", "PostgreSql - СУБД")
+
+Rel_R(system_db, system_shop, "Чтение/запись данных о покупателях, заказах, продуктах", "")
+Rel_R(system_shop, system_db, "", "")
+Rel_R(user_customer, system_shop, "Просмотр продуктов, покупка продуктов, изменение тарифа", "")
+Rel_R(user_accountant, system_shop, "Ручное изменение статуса оплаты", "")
+Rel_R(user_programmer, system_shop, "Настраивает продукты", "")
+Rel_R(system_shop, system_queue, "Отправка сообщений покупателю", "")
+Rel_R(system_queue, system_email, "Отправка сообщений покупателю", "")
+Rel_R(system_shop, system_bank, "Перенаправление пользователя на страницу оплаты продукта; Отправка статуса оплаты", "")
+Rel_R(system_bank, system_shop, "", "")
+Rel_R(system_shop, system_docs, "Перенаправление пользователя для подписания документов", "")
+
+@enduml
