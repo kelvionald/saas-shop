@@ -10,19 +10,22 @@ Person(user_programmer, "Продуктолог")
 
 System(system_shop, "SaaS магазин", "Позволяет покупателю покупать товары и изменять тарифы")
 
-System_Ext(system_email, "Почтовый сервис", "n8n - отправка сообщений клиенту через n8n на электронную почту")
+System_Ext(system_email, "Почтовый сервис", "n8n - отправка писем клиенту через n8n на электронную почту")
 System_Ext(system_bank, "Платежный шлюз", "Sber - страница оплаты продукта")
 System_Ext(system_docs, "Сервис ЭДО", "Диадок - сервис подписания электронных документов")
 System_Ext(system_ops, "OPS сервис", "Сервис приложений магазина")
+System_Ext(system_site, "Сайт визитка", "Сайт с продуктами и их тарифами")
 
-Rel(user_customer, system_shop, "Просмотр продуктов, покупка продуктов, изменение тарифа")
+Rel(user_customer, system_site, "Просмотр продуктов")
+Rel_L(system_shop, system_site, "Чтение тарифов")
+Rel(user_customer, system_shop, "Просмотр продуктов; Покупка продуктов; Изменение тарифа")
 Rel(user_accountant, system_shop, "Ручное изменение статуса оплаты")
 Rel(user_programmer, system_shop, "Настраивает продукты")
-Rel(system_shop, system_email, "Отправка сообщений покупателю")
+Rel(system_shop, system_email, "Отправка писем покупателю")
 Rel_R(system_shop, system_bank, "Перенаправление пользователя на страницу оплаты продукта")
 Rel_R(system_bank, system_shop, "Отправка статуса оплаты")
 Rel(system_shop, system_docs, "Перенаправление пользователя для подписания документов")
-Rel(system_shop, system_ops, "Запуск/остановка приложения; изменение кол-ва лицензий")
+Rel(system_shop, system_ops, "Запуск/остановка приложения; Изменение кол-ва лицензий")
 Rel_R(system_ops, system_shop, "Статус операции")
 
 @enduml

@@ -1,12 +1,58 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-Person(admin, "Administrator")
-System_Boundary(c1, "Sample System") {
-    Container(web_app, "Web Application", "C#, ASP.NET Core 2.1 MVC", "Allows users to compare multiple Twitter timelines")
-}
-System(twitter, "Twitter")
+Person(user_customer, "Покупатель")
+Person(user_accountant, "Бухгалтер")
+Person(user_programmer, "Программист")
 
-Rel(admin, web_app, "Uses", "HTTPS")
-Rel(web_app, twitter, "Gets tweets from", "HTTPS")
+System(system_shop, "SaaS магазин", "Позволяет покупателю покупать товары и изменять тарифы")
+
+System_Ext(system_email, "Почтовый сервис", "n8n - отправка писем клиенту через n8n на электронную почту")
+System_Ext(system_bank, "Платежный шлюз", "Sber - страница оплаты продукта")
+System_Ext(system_docs, "Сервис ЭДО", "Диадок - сервис подписания электронных документов")
+System_Ext(system_ops, "OPS сервис", "Сервис приложений магазина")
+System_Ext(system_site, "Сайт визитка", "Сайт с продуктами и их тарифами")
+
+System_Boundary(system_shop, "SaaS магазин") {
+    Container(system_admin, "Админка", "Strapi CMS")
+    ContainerQueue(system_queue, "Брокер сообщений", "RabbitMQ")
+    ContainerDb(system_db_product, "База продуктов", "PostgreSql")
+    ContainerDb(system_db_user, "База клиентов", "PostgreSql")
+    
+    Container(system_account_front, "Личный кабинет фронтенд", "VueJs + Vuetify")
+    Container(system_sign, "Сервис авторизации", "Keycloak")
+    Container(system_account_backend, "Личный кабинет бекенд", ".Net Core")
+    ContainerDb(system_db_order, "База заказов", "PostgreSql")
+    Container(system_billing, "Сервис оплаты", ".Net Core")
+}
+
+Rel(system_db_product, system_admin, "Чтение/запись данных о продуктах")
+Rel(system_admin, system_db_product, "")
+
+Rel_D(user_accountant, system_admin, "Ручное изменение статуса оплаты")
+Rel_D(user_programmer, system_admin, "Настраивает продукты")
+
+Rel_D(system_account_front, system_sign, "Вход/регистрация")
+Rel_D(system_sign, system_db_user, "Создание клиента/чтение данных клиента")
+Rel_D(system_sign, system_account_front, "Возврат JWT")
+Rel_D(system_account_backend, system_sign, "Проверка авторизации")
+
+Rel_D(system_account_front, system_account_backend, "Получение купленных продуктов; покупка продукта; изменение кол-ва лицензий")
+Rel_D(system_account_backend, system_db_order, "Получение купленных продуктов")
+Rel_D(system_account_backend, system_billing, "Покупка продукта; изменение кол-ва лицензий")
+Rel_D(system_billing, system_db_order, "Создание заказа; Сохранение статуса оплаты")
+
+Rel_R(system_account_front, system_bank, "Перенаправление пользователя на страницу оплаты продукта")
+Rel_L(system_bank, system_billing, "Отправка статуса оплаты")
+
+Rel(system_billing, system_queue, "Отправка писем покупателю")
+Rel(system_queue, system_email, "Отправка писем покупателю")
+
+Rel(user_customer, system_account_front, "Просмотр продуктов; Покупка продуктов; Изменение тарифа")
+Rel(user_customer, system_site, "Просмотр продуктов")
+Rel(system_account_front, system_docs, "Перенаправление пользователя для подписания документов")
+Rel_U(system_billing, system_docs, "Создание акта")
+Rel(system_billing, system_ops, "Запуск/остановка приложения; Изменение кол-ва лицензий")
+Rel_L(system_ops, system_billing, "Статус операции")
+
 @enduml
