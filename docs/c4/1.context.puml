@@ -23,6 +23,6 @@ Rel_R(system_shop, system_bank, "Перенаправление пользова
 Rel_R(system_bank, system_shop, "Отправка статуса оплаты")
 Rel(system_shop, system_docs, "Перенаправление пользователя для подписания документов")
 Rel(system_shop, system_ops, "Запуск/остановка приложения; изменение кол-ва лицензий")
-Rel(system_ops, system_shop, "Статус операции")
+Rel_R(system_ops, system_shop, "Статус операции")
 
 @enduml
