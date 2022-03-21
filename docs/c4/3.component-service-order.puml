@@ -1,0 +1,43 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Person(user_customer, "Покупатель")
+Person(user_accountant, "Бухгалтер")
+
+System_Ext(system_bank, "Платежный шлюз", "Sber - страница оплаты продукта")
+System_Ext(system_docs, "Сервис ЭДО", "Диадок - сервис подписания электронных документов")
+System_Ext(system_ops, "OPS сервис", "Сервис приложений магазина")
+
+ContainerQueue_Ext(system_queue, "Брокер сообщений", "RabbitMQ")
+Container_Ext(system_flow, "Автоматизация", "n8n")
+
+Container_Ext(system_admin, "Сервис продуктов", "NodeJs + Strapi CMS")
+
+Container_Ext(system_account_front, "Личный кабинет фронтенд", "VueJs + Vuetify")
+
+Container_Boundary(container_order, "Сервис заказов") {
+    Component(component_order, "Сервис заказов", ".Net Core")
+    ComponentDb(component_order_db, "База заказов", "PostgreSql")
+}
+
+Rel(user_accountant, system_admin, "Ручное изменение статуса оплаты")
+Rel(system_admin, system_queue, "Изменение статуса оплаты (из админки)")
+
+Rel(system_queue, component_order, "Изменение статуса оплаты (из админки)")
+Rel(component_order, system_ops, "Запуск/остановка приложения; Изменение кол-ва лицензий")
+
+Rel(system_account_front, component_order, "Создание заказа; Изменение кол-ва лицензий")
+Rel(user_customer, system_account_front, "Просмотр заказов; Покупка продуктов; Изменение тарифа")
+
+Rel(system_account_front, system_bank, "Переход на страницу оплаты продукта")
+Rel(system_bank, component_order, "Отправка статуса оплаты")
+
+Rel(system_queue, system_flow, "Отправка писем покупателю")
+
+Rel(system_account_front, system_docs, "Переход на подписание документов")
+Rel(component_order, system_docs, "Создание акта")
+Rel(system_ops, component_order, "Статус OPS операции")
+
+Rel(component_order_db, component_order, "<Использует>")
+
+@enduml
