@@ -18,13 +18,14 @@ System_Boundary(system_shop, "SaaS магазин") {
     Container(system_flow, "Автоматизация", "n8n")
 
     Container(system_admin, "Сервис продуктов", "NodeJs + Strapi CMS")
-    Container(system_sign, "Сервис авторизации клиентов", ".Net Core + Keycloak")
+    Container(system_sign, "Сервис клиентов", ".Net Core + Keycloak")
     Container(system_billing, "Сервис заказов + биллинг", ".Net Core")
     
     Container(system_account_front, "Личный кабинет фронтенд", "VueJs + Vuetify")
 }
 
 ' Все сервисы могут отправлять в брокер почтовые сообщения клиенту
+' Админка может читать данные из любых сервисов
 
 Rel(user_accountant, system_admin, "Ручное изменение статуса оплаты")
 Rel(user_programmer, system_admin, "Настраивает продукты")

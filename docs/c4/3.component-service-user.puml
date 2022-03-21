@@ -1,0 +1,32 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Person(user_customer, "Покупатель")
+
+ContainerQueue(system_queue, "Брокер сообщений", "RabbitMQ")
+    
+Component_Ext(system_account_front, "Личный кабинет фронтенд", "VueJs + Vuetify")
+Component_Ext(system_another, "Другие сервисы", "")
+
+Container_Boundary(system_sign, "Сервис клиентов") {
+    Component(component_sign, "Сервис клиентов", ".Net Core + Keycloak")
+    Component(component_open_auth, "Keycloak", ".Net Core + Keycloak")
+    ComponentDb(component_open_auth_db, "База пользователей", "PostgreSql")
+}
+
+Rel(user_customer, system_account_front, "Вход/регистрация/восстановление пароля")
+
+Rel(system_account_front, component_sign, "Вход/регистрация/восстановление пароля")
+Rel(component_sign, system_account_front, "Возврат JWT")
+
+Rel(component_sign, system_another, "Чтение данных о пользователей")
+
+Rel(component_open_auth_db, component_sign, "Чтение данных о пользователей")
+
+Rel(component_sign, component_open_auth, "Вход/регистрация/восстановление пароля")
+Rel(component_open_auth, component_sign, "Возврат JWT")
+
+Rel(component_open_auth, component_open_auth_db, "Чтение/запись пользователей")
+Rel(component_open_auth_db, component_open_auth, "")
+
+@enduml
