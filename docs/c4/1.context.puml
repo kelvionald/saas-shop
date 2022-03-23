@@ -1,9 +1,6 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
-AddElementTag("fallback", $bgColor="#444444")
-
-
 Person(user_customer, "Покупатель")
 Person(user_accountant, "Бухгалтер")
 Person(user_programmer, "Продуктолог")
