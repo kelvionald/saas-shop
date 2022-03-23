@@ -3,7 +3,7 @@
 
 Person(user_customer, "Покупатель")
 Person(user_accountant, "Бухгалтер")
-Person(user_programmer, "Программист")
+Person(user_programmer, "Продуктолог")
 
 System(system_shop, "SaaS магазин", "Позволяет покупателю покупать товары и изменять тарифы")
 
@@ -17,38 +17,51 @@ System_Boundary(system_shop, "SaaS магазин") {
     ContainerQueue(system_queue, "Брокер сообщений", "RabbitMQ")
     Container(system_flow, "Автоматизация", "n8n")
 
-    Container(system_admin, "Сервис продуктов", "NodeJs + Strapi CMS")
-    Container(system_sign, "Сервис клиентов", ".Net Core + Keycloak")
+    Container(system_admin, "Сервис продуктов", "Strapi CMS")
+    Container(system_sign, "Сервис аутентификации", "Keycloak")
     Container(system_billing, "Сервис заказов + биллинг", ".Net Core")
     
-    Container(system_account_front, "Личный кабинет фронтенд", "VueJs + Vuetify")
+    Container(system_account_front, "Личный кабинет покупателя", "VueJs + Vuetify")
+    Container(container_widget, "Виджет", "VanillaJs")
+    Container(container_accountant_admin, "Личный кабинет бухгалтера", "???")
+    
+    ContainerDb(container_db, "База данных", "PostgreSql")
 }
 
-' Все сервисы могут отправлять в брокер почтовые сообщения клиенту
-' Админка может читать данные из любых сервисов
+Rel(system_site, container_widget, "Встраивание виджета тарифов")
+Rel(container_widget, system_admin, "Чтение тарифов")
 
-Rel(user_accountant, system_admin, "Ручное изменение статуса оплаты")
-Rel(user_programmer, system_admin, "Настраивает продукты")
-Rel(system_admin, system_queue, "Изменение статуса оплаты (из админки)")
-' Rel(system_admin, system_site, "Получение продуктов")
+Rel(user_accountant, container_accountant_admin, "Ручное изменение статуса оплаты")
+Rel(container_accountant_admin, system_billing, "Ручное изменение статуса оплаты")
 
-Rel(system_queue, system_billing, "Изменение статуса оплаты (из админки)")
-Rel(system_billing, system_ops, "Запуск/остановка приложения; Изменение кол-ва лицензий")
+Rel(user_programmer, system_admin, "Создание/ Изменение/ Удаление продуктов")
 
-Rel(system_account_front, system_billing, "Создание заказа; Изменение кол-ва лицензий")
-Rel(user_customer, system_account_front, "Просмотр продуктов; Покупка продуктов; Изменение тарифа")
+Rel(system_admin, container_db, "Создание/ Изменение/ Удаление продуктов")
+Rel(system_sign, container_db, "Регистрация/ Получение пользователей")
+Rel(system_billing, container_db, "Создание заказов; Изменение статуса оплаты; Чтение заказов")
+
+Rel(system_account_front, system_billing, "Создание заказа; Изменение кол-ва лицензий; Запрос акта; Просмотр купленных продуктов")
+Rel(user_customer, system_account_front, "Создание заказа; Изменение кол-ва лицензий; Запрос акта; Просмотр купленных продуктов")
 Rel(user_customer, system_site, "Просмотр продуктов")
-Rel(system_account_front, system_sign, "Вход/регистрация")
-Rel(system_sign, system_account_front, "Возврат JWT")
+Rel(system_account_front, system_sign, "Аутентификация; Регистрация; Восстановление пароля")
 
+Rel(user_customer, system_bank, "Оплата продукта")
+Rel(user_customer, system_docs, "Подписание документов")
 Rel(system_account_front, system_bank, "Переход на страницу оплаты продукта")
-Rel(system_bank, system_billing, "Отправка статуса оплаты")
+Rel(system_bank, system_flow, "Отправка статуса оплаты")
 
-Rel(system_queue, system_flow, "Отправка писем покупателю")
 Rel(system_flow, system_email, "Отправка писем покупателю")
 
 Rel(system_account_front, system_docs, "Переход на подписание документов")
 Rel(system_billing, system_docs, "Создание акта")
-Rel(system_ops, system_billing, "Статус OPS операции")
+
+Rel_U(system_flow, system_queue, "Чтение/ Создание событий")
+Rel(system_admin, system_queue, "Продукт Созданан/ Изменен/ Удален")
+Rel(system_sign, system_queue, "Пользователь зарегистрирован")
+Rel(system_billing, system_queue, "Запуск/остановка приложения; Изменение кол-ва лицензий")
+Rel(system_ops, system_queue, "Статус OPS операции")
+Rel(system_ops, system_queue, "Чтение событий: Запуск/остановка приложения; Изменение кол-ва лицензий")
+
+Rel(system_docs, system_flow, "Документы подписаны")
 
 @enduml
