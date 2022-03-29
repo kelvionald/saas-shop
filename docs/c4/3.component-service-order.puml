@@ -1,43 +1,56 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
-Person(user_customer, "Покупатель")
-Person(user_accountant, "Бухгалтер")
-
+System_Ext(system_email, "Почтовый сервис", "n8n - отправка писем клиенту через n8n на электронную почту")
 System_Ext(system_bank, "Платежный шлюз", "Sber - страница оплаты продукта")
 System_Ext(system_docs, "Сервис ЭДО", "Диадок - сервис подписания электронных документов")
-System_Ext(system_ops, "OPS сервис", "Сервис приложений магазина")
 
-ContainerQueue_Ext(system_queue, "Брокер сообщений", "RabbitMQ")
-Container_Ext(system_flow, "Автоматизация", "n8n")
+ContainerQueue(system_queue, "Брокер сообщений", "RabbitMQ")
+Container(system_flow, "Автоматизация", "n8n")
 
-Container_Ext(system_admin, "Сервис продуктов", "NodeJs + Strapi CMS")
+Container(system_admin, "Сервис продуктов", "Strapi CMS")
 
-Container_Ext(system_account_front, "Личный кабинет фронтенд", "VueJs + Vuetify")
+Container(system_account_front, "Личный кабинет покупателя", "VueJs + Vuetify")
+Container(container_accountant_admin, "Личный кабинет бухгалтера", "Angular")
 
-Container_Boundary(container_order, "Сервис заказов") {
-    Component(component_order, "Сервис заказов", ".Net Core")
-    ComponentDb(component_order_db, "База заказов", "PostgreSql")
+ContainerDb(container_db, "База данных", "PostgreSql")
+
+Container_Boundary(system_admin1, "Сервис заказов") {
+    Component(system_billing, "API заказов", "C# Class")
+    Component(component_billing, "Компонент заказов", "C# Class")
+    Component(component_docs, "Компонент ЭДО", "C# Class")
+    Component(component_ops, "Компонент OPS", "C# Class")
+    Component(component_crud, "CRUD Generated API For Admin", "C# Class")
+    Component(component_cron, "Выполнение регулярных задач")
 }
 
-Rel(user_accountant, system_admin, "Ручное изменение статуса оплаты")
-Rel(system_admin, system_queue, "Изменение статуса оплаты (из админки)")
-
-Rel(system_queue, component_order, "Изменение статуса оплаты (из админки)")
-Rel(component_order, system_ops, "Запуск/остановка приложения; Изменение кол-ва лицензий")
-
-Rel(system_account_front, component_order, "Создание заказа; Изменение кол-ва лицензий")
-Rel(user_customer, system_account_front, "Просмотр заказов; Покупка продуктов; Изменение тарифа")
+Rel(container_accountant_admin, component_crud, "Ручное изменение статуса оплаты; Просмотр счетов, документов, пользователей")
+Rel(component_crud, container_db, "Ручное изменение статуса оплаты; Просмотр/создание счетов, документов, пользователей")
+Rel(system_billing, component_billing, "Создание заказов; Изменение статуса оплаты")
+Rel(component_billing, system_admin, "Чтение продуктов")
+Rel(system_billing, container_db, "Чтение заказов")
+Rel(system_account_front, system_billing, "Создание заказа; Изменение кол-ва лицензий; Запрос акта; Просмотр купленных продуктов")
+Rel(component_cron, component_billing, "Запуск автосписания средств")
+Rel(component_cron, system_queue, "Письмо о предстоящем списании")
 
 Rel(system_account_front, system_bank, "Переход на страницу оплаты продукта")
-Rel(system_bank, component_order, "Отправка статуса оплаты")
+Rel(component_billing,  system_bank, "Создание формы оплаты")
+Rel(component_billing,  system_queue, "Чтение статуса оплаты")
+Rel(component_billing,  component_ops, "Запрос на запуск/ остановку/ обновление приложения")
+Rel(component_billing,  component_docs, "Запрос на создание счета-оферты")
+Rel(system_billing,  component_docs, "Запрос на создание акта")
+Rel(system_bank, system_flow, "Отправка статуса оплаты")
 
-Rel(system_queue, system_flow, "Отправка писем покупателю")
+Rel(system_flow, system_email, "Отправка писем покупателю")
 
 Rel(system_account_front, system_docs, "Переход на подписание документов")
-Rel(component_order, system_docs, "Создание акта")
-Rel(system_ops, component_order, "Статус OPS операции")
+Rel(component_docs, system_docs, "Создание документа")
 
-Rel(component_order_db, component_order, "<Использует>")
+Rel(component_docs, system_queue, "Чтение статуса подписания документов")
+Rel_U(system_flow, system_queue, "Чтение/ Создание событий")
+Rel(component_ops, system_queue, "Чтение статуса OPS операции")
+Rel(component_ops, system_queue, "Чтение событий: Запуск/остановка приложения; Изменение кол-ва лицензий")
+
+Rel(system_docs, system_flow, "Документы подписаны")
 
 @enduml

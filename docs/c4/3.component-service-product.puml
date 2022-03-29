@@ -1,0 +1,23 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Person(user_programmer, "Продуктолог")
+
+System_Ext(system_site, "Сайт визитка", "Сайт с продуктами и их тарифами")
+ContainerQueue(system_queue, "Брокер сообщений", "RabbitMQ")
+Container(system_account_front, "Личный кабинет покупателя", "VueJs + Vuetify")
+Container(container_widget, "Виджет", "VanillaJs")
+ContainerDb(container_db, "База данных", "PostgreSql")
+
+Container_Boundary(system_admin1, "Сервис продуктов") {
+    Component(system_admin, "Админка продуктов", "Strapi CMS")
+}
+
+Rel(system_site, container_widget, "Встраивание виджета тарифов")
+Rel(container_widget, system_admin, "Чтение тарифов")
+Rel(user_programmer, system_admin, "Создание/ Изменение/ Удаление продуктов")
+Rel(system_admin, container_db, "Создание/ Изменение/ Удаление продуктов")
+Rel(system_account_front, system_admin, "Чтение продуктов")
+Rel(system_admin, system_queue, "Продукт Созданан/ Изменен/ Удален")
+
+@enduml

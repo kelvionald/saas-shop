@@ -19,11 +19,11 @@ System_Boundary(system_shop, "SaaS магазин") {
 
     Container(system_admin, "Сервис продуктов", "Strapi CMS")
     Container(system_sign, "Сервис аутентификации", "Keycloak")
-    Container(system_billing, "Сервис заказов + биллинг", ".Net Core")
+    Container(system_billing, "Сервис заказов", ".Net Core")
     
     Container(system_account_front, "Личный кабинет покупателя", "VueJs + Vuetify")
     Container(container_widget, "Виджет", "VanillaJs")
-    Container(container_accountant_admin, "Личный кабинет бухгалтера", "???")
+    Container(container_accountant_admin, "Личный кабинет бухгалтера", "Angular")
     
     ContainerDb(container_db, "База данных", "PostgreSql")
 }
@@ -31,8 +31,8 @@ System_Boundary(system_shop, "SaaS магазин") {
 Rel(system_site, container_widget, "Встраивание виджета тарифов")
 Rel(container_widget, system_admin, "Чтение тарифов")
 
-Rel(user_accountant, container_accountant_admin, "Ручное изменение статуса оплаты")
-Rel(container_accountant_admin, system_billing, "Ручное изменение статуса оплаты")
+Rel(user_accountant, container_accountant_admin, "Ручное изменение статуса оплаты; Просмотр счетов, документов, пользователей")
+Rel(container_accountant_admin, system_billing, "Ручное изменение статуса оплаты; Просмотр счетов, документов, пользователей")
 
 Rel(user_programmer, system_admin, "Создание/ Изменение/ Удаление продуктов")
 
@@ -40,6 +40,7 @@ Rel(system_admin, container_db, "Создание/ Изменение/ Удал�
 Rel(system_sign, container_db, "Регистрация/ Получение пользователей")
 Rel(system_billing, container_db, "Создание заказов; Изменение статуса оплаты; Чтение заказов")
 
+Rel(system_account_front, system_admin, "Чтение продуктов")
 Rel(system_account_front, system_billing, "Создание заказа; Изменение кол-ва лицензий; Запрос акта; Просмотр купленных продуктов")
 Rel(user_customer, system_account_front, "Создание заказа; Изменение кол-ва лицензий; Запрос акта; Просмотр купленных продуктов")
 Rel(user_customer, system_site, "Просмотр продуктов")
@@ -48,6 +49,7 @@ Rel(system_account_front, system_sign, "Аутентификация; Регис
 Rel(user_customer, system_bank, "Оплата продукта")
 Rel(user_customer, system_docs, "Подписание документов")
 Rel(system_account_front, system_bank, "Переход на страницу оплаты продукта")
+Rel_L(system_billing, system_bank, "Создание формы оплаты")
 Rel(system_bank, system_flow, "Отправка статуса оплаты")
 
 Rel(system_flow, system_email, "Отправка писем покупателю")
