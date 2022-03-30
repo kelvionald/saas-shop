@@ -9,8 +9,8 @@ Container(system_account_front, "Личный кабинет покупател�
 
 ContainerDb(container_db, "База данных", "PostgreSql")
 
-Container_Boundary(system_admin1, "Сервис аутентификации") {
-    Component(system_sign, "Сервис аутентификации", "Keycloak")
+Container_Boundary(system_admin1, "Сервис клиентов") {
+    Component(system_sign, "Сервис клиентов", "Keycloak")
 }
 
 Rel(system_sign, container_db, "Регистрация/ Получение пользователей")

@@ -18,7 +18,7 @@ System_Boundary(system_shop, "SaaS магазин") {
     Container(system_flow, "Автоматизация", "n8n")
 
     Container(system_admin, "Сервис продуктов", "Strapi CMS")
-    Container(system_sign, "Сервис аутентификации", "Keycloak")
+    Container(system_sign, "Сервис клиентов", "Keycloak")
     Container(system_billing, "Сервис заказов", ".Net Core")
     
     Container(system_account_front, "Личный кабинет покупателя", "VueJs + Vuetify")
@@ -48,13 +48,11 @@ Rel(system_account_front, system_sign, "Аутентификация; Регис
 
 Rel(user_customer, system_bank, "Оплата продукта")
 Rel(user_customer, system_docs, "Подписание документов")
-Rel(system_account_front, system_bank, "Переход на страницу оплаты продукта")
 Rel_L(system_billing, system_bank, "Создание формы оплаты")
 Rel(system_bank, system_flow, "Отправка статуса оплаты")
 
 Rel(system_flow, system_email, "Отправка писем покупателю")
 
-Rel(system_account_front, system_docs, "Переход на подписание документов")
 Rel(system_billing, system_docs, "Создание акта")
 
 Rel_U(system_flow, system_queue, "Чтение/ Создание событий")
