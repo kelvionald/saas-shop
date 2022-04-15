@@ -5,6 +5,6 @@
 * Сервис клиентов - https://github.com/IrinaZagaynova/saas-shop-service-client
 * ЛК клиента - https://github.com/Desire4sorrow/saas-market (saas-shop-frontend)
 * Виджет - https://chicony.github.io/Store/ (saas-shop-widget)
-* Админка бухгалтера - saas-shop-admin-accountant
-* DevOps - saas-shop-dev-ops
-* n8n - saas-shop-flow
+* Админка бухгалтера - https://github.com/Curpiq/saas-shop-admin-accountant
+* DevOps - https://github.com/gstaizer/saas-shop-dev-ops
+* n8n - https://github.com/kelvionald/saas-shop-service-flow
