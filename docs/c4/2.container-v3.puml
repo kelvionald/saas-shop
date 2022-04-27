@@ -15,13 +15,13 @@ System_Ext(system_site, "Сайт визитка", "Сайт с продукта
 
 System_Boundary(system_shop, "SaaS магазин") {
     ContainerQueue(system_queue, "Брокер сообщений", "RabbitMQ")
-    Container(system_flow, "Автоматизация", "n8n")
+    Container(system_flow, "Сервис автоматизация", "n8n")
 
     Container(system_admin, "Сервис продуктов", "Strapi CMS")
     Container(system_sign, "Сервис клиентов", "Keycloak")
-    Container(system_billing, "Сервис заказов", ".Net Core")
+    Container(system_billing, "Сервис заказов", "NodeJs")
     
-    Container(system_account_front, "Личный кабинет покупателя", "VueJs + Vuetify")
+    Container(system_account_front, "Личный кабинет\n клиента", "VueJs + Vuetify")
     Container(container_widget, "Виджет", "VanillaJs")
     Container(container_accountant_admin, "Личный кабинет бухгалтера", "Angular")
     
