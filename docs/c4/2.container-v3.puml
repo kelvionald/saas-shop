@@ -1,14 +1,14 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-Person(user_customer, "Покупатель")
+Person(user_customer, "Клиент")
 Person(user_accountant, "Бухгалтер")
 Person(user_programmer, "Продуктолог")
 
 System(system_shop, "SaaS магазин", "Позволяет покупателю покупать товары и изменять тарифы")
 
 System_Ext(system_email, "Почтовый сервис", "n8n - отправка писем клиенту через n8n на электронную почту")
-System_Ext(system_bank, "Платежный шлюз", "Sber - страница оплаты продукта")
+System_Ext(system_bank, "Сервис оплаты", "Sber - страница оплаты продукта")
 System_Ext(system_docs, "Сервис ЭДО", "Диадок - сервис подписания электронных документов")
 System_Ext(system_ops, "OPS сервис", "Сервис приложений магазина")
 System_Ext(system_site, "Сайт визитка", "Сайт с продуктами и их тарифами")
@@ -17,12 +17,12 @@ System_Boundary(system_shop, "SaaS магазин") {
     ContainerQueue(system_queue, "Брокер сообщений", "RabbitMQ")
     Container(system_flow, "Сервис автоматизация", "n8n")
 
-    Container(system_admin, "Сервис продуктов", "Strapi CMS")
+    Container(system_admin, "Сервис продуктов и личный кабинет продуктолога", "Strapi CMS")
     Container(system_sign, "Сервис клиентов", "Keycloak")
     Container(system_billing, "Сервис заказов", "NodeJs")
     
     Container(system_account_front, "Личный кабинет\n клиента", "VueJs + Vuetify")
-    Container(container_widget, "Виджет", "VanillaJs")
+    Container(container_widget, "Виджет тарифов", "VanillaJs")
     Container(container_accountant_admin, "Личный кабинет бухгалтера", "Angular")
     
     ContainerDb(container_db, "База данных", "PostgreSql")
