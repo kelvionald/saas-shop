@@ -11,7 +11,7 @@ System_Ext(system_email, "Почтовый сервис", "Отправка пи
 System_Ext(system_bank, "Сервис оплаты", "Страница оплаты продукта")
 System_Ext(system_docs, "Сервис ЭДО", "Сервис подписания электронных документов")
 System_Ext(system_ops, "OPS сервис", "Внешний сервис приложений магазина")
-System_Ext(system_site, "Сайт визитка", "Сайт с продуктами и их тарифами")
+System_Ext(system_site, "Сайт каталог продуктов", "Сайт с продуктами и их тарифами")
 
 Rel(user_customer, system_site, "Просмотр продуктов")
 Rel_R(system_site, system_shop, "Встраивание виджета тарифов")
